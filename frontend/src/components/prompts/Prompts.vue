@@ -79,6 +79,7 @@ watch(currentPromptName, (newValue) => {
 
 window.addEventListener("keydown", (event) => {
   if (!layoutStore.currentPrompt) return;
+  if (layoutStore.currentPromptName === "supportFile") return;
 
   if (event.key === "Escape") {
     event.stopImmediatePropagation();
