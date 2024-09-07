@@ -44,8 +44,8 @@ func NewHandler(
 
 	r.HandleFunc("/health", healthHandler)
 	r.HandleFunc("/splash", func(w http.ResponseWriter, r *http.Request) {
-        http.ServeFile(w, r, "/rcade/resources/splash/RCadeSplash.jpg")
-    })
+		http.ServeFile(w, r, "/rcade/resources/splash/RCadeSplash.jpg")
+	})
 	r.PathPrefix("/static").Handler(static)
 	r.NotFoundHandler = index
 
@@ -83,6 +83,8 @@ func NewHandler(
 
 	api.Handle("/settings", monkey(settingsGetHandler, "")).Methods("GET")
 	api.Handle("/settings", monkey(settingsPutHandler, "")).Methods("PUT")
+
+	api.Handle("/support", monkey(supportFileHandler, "")).Methods("GET")
 
 	api.PathPrefix("/raw").Handler(monkey(rawHandler, "/api/raw")).Methods("GET")
 	api.PathPrefix("/preview/{size}/{path:.*}").

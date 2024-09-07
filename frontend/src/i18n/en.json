@@ -141,7 +141,9 @@
     "uploadMessage": "Select an option to upload.",
     "optionalPassword": "Optional password",
     "resolution": "Resolution",
-    "discardEditorChanges": "Are you sure you wish to discard the changes you've made?"
+    "discardEditorChanges": "Are you sure you wish to discard the changes you've made?",
+    "supportFile": "Support File",
+    "supportFileMessage": "Generate a support file."
   },
   "search": {
     "images": "Images",
@@ -252,7 +254,8 @@
     "preview": "Preview",
     "settings": "Settings",
     "signup": "Signup",
-    "siteSettings": "Site Settings"
+    "siteSettings": "Site Settings",
+    "supportFile": "Support File"
   },
   "success": {
     "linkCopied": "Link copied!"

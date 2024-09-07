@@ -55,6 +55,15 @@
           <span>{{ $t("sidebar.logs") }}</span>
         </button> -->
         <button
+          @click="showHover('supportFile')"
+          class="action"
+          :aria-label="$t('sidebar.supportFile')"
+          :title="$t('sidebar.supportFile')"
+        >
+          <i class="material-icons">support_agent</i>
+          <span>{{ $t("sidebar.supportFile") }}</span>
+        </button>
+        <button
           class="action"
           @click="toSettings"
           :aria-label="$t('sidebar.settings')"
@@ -112,14 +121,7 @@
 
     <p class="credits">
       <span>
-        <span v-if="disableExternal">File Browser</span>
-        <a
-          v-else
-          rel="noopener noreferrer"
-          target="_blank"
-          href="https://github.com/filebrowser/filebrowser"
-          >File Browser</a
-        >
+        <span>RCade Web File Browser</span>
         <span> {{ version }}</span>
       </span>
       <span>

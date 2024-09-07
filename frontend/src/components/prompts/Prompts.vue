@@ -25,6 +25,7 @@ import Share from "./Share.vue";
 import ShareDelete from "./ShareDelete.vue";
 import Upload from "./Upload.vue";
 import DiscardEditorChanges from "./DiscardEditorChanges.vue";
+import SupportFile from "./SupportFile.vue";
 
 const layoutStore = useLayoutStore();
 
@@ -47,6 +48,7 @@ const components = new Map<string, any>([
   ["share", Share],
   ["upload", Upload],
   ["share-delete", ShareDelete],
+  ["supportFile", SupportFile],
   ["deleteUser", DeleteUser],
   ["discardEditorChanges", DiscardEditorChanges],
 ]);
@@ -60,8 +62,12 @@ watch(currentPromptName, (newValue) => {
   const modal = components.get(newValue!);
   if (!modal) return;
 
+  const shouldBlock = newValue === "supportFile";
   const { open, close } = useModal({
     component: BaseModal,
+    attrs: {
+      clickToClose: !shouldBlock,
+    },
     slots: {
       default: modal,
     },
