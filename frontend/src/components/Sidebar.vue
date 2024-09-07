@@ -34,7 +34,26 @@
         </button>
       </div>
 
+      <div v-if="hasPixelcade">
+        <button
+          class="action"
+          @click="toPixelcade"
+          :aria-label="$t('sidebar.pixelcade')"
+          :title="$t('sidebar.pixelcade')"
+        >
+          <i class="material-icons">apps</i>
+          <span>{{ $t("sidebar.pixelcade") }}</span>
+        </button>
+      </div>
       <div>
+        <!-- <button
+          class="action"
+          :aria-label="$t('sidebar.logs')"
+          :title="$t('sidebar.logs')"
+        >
+          <i class="material-icons">receipt_long</i>
+          <span>{{ $t("sidebar.logs") }}</span>
+        </button> -->
         <button
           class="action"
           @click="toSettings"
@@ -141,6 +160,11 @@ export default {
   components: {
     ProgressBar,
   },
+  data() {
+    return {
+      hasPixelcade: false, // Initialize the variable
+    };
+  },
   inject: ["$showError"],
   computed: {
     ...mapState(useAuthStore, ["user", "isLoggedIn"]),
@@ -177,6 +201,27 @@ export default {
       }
       return Object.assign(this.usage, usageStats);
     },
+    checkPixelcade() {
+      const currentHost = window.location.hostname; // Get the current hostname
+      const url = `http://${currentHost}:8080/api/device/info`;
+
+      // Perform the fetch request
+      fetch(url, { mode: "no-cors" })
+        .then(() => {
+          // If no error, port is likely open
+          this.hasPixelcade = true;
+        })
+        .catch(() => {
+          // If fetch fails, port is closed or inaccessible
+          this.hasPixelcade = false;
+        });
+    },
+    toPixelcade() {
+      const currentHost = window.location.hostname; // Get the current hostname
+      const url = `http://${currentHost}:8080`; // Change only the port to 8080
+      window.open(url, "_blank"); // Open the new URL in a new tab
+      this.closeHovers();
+    },
     toRoot() {
       this.$router.push({ path: "/files" });
       this.closeHovers();
@@ -194,6 +239,10 @@ export default {
     isFiles(newValue) {
       newValue && this.fetchUsage();
     },
+  },
+  mounted() {
+    // Check for Pixelcade when the component is mounted
+    this.checkPixelcade();
   },
 };
 </script>

@@ -43,6 +43,9 @@ func NewHandler(
 	}
 
 	r.HandleFunc("/health", healthHandler)
+	r.HandleFunc("/splash", func(w http.ResponseWriter, r *http.Request) {
+        http.ServeFile(w, r, "/rcade/resources/splash/RCadeSplash.jpg")
+    })
 	r.PathPrefix("/static").Handler(static)
 	r.NotFoundHandler = index
 
