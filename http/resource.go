@@ -144,15 +144,19 @@ func getVirtualRoot() (*files.FileInfo, error) {
 }
 
 var resourceVirtualGetHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-	if r.URL.Path == "/" {
-		return virtualRootHandler(w, r, d)
-	} else if r.URL.Path == "/logs" || r.URL.Path == "/logs/" {
-		return logFilesHandler(w, r, d)
-	} else if strings.HasPrefix(r.URL.Path, "/logs/") {
-		return logFileHandler(w, r, d)
-	}
+	path := strings.TrimSuffix(r.URL.Path, "/")
 
-	return http.StatusNotFound, nil
+	switch path {
+	case "":
+		return virtualRootHandler(w, r, d)
+	case "/logs":
+		return logFilesHandler(w, r, d)
+	default:
+		if strings.HasPrefix(path, "/logs/") {
+			return logFileHandler(w, r, d)
+		}
+		return http.StatusNotFound, nil
+	}
 })
 
 var virtualRootHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
