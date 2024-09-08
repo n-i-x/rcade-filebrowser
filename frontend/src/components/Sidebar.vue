@@ -46,14 +46,15 @@
         </button>
       </div>
       <div>
-        <!-- <button
+        <button
           class="action"
+          @click="toLogs"
           :aria-label="$t('sidebar.logs')"
           :title="$t('sidebar.logs')"
         >
           <i class="material-icons">receipt_long</i>
           <span>{{ $t("sidebar.logs") }}</span>
-        </button> -->
+        </button>
         <button
           @click="showHover('supportFile')"
           class="action"
@@ -217,6 +218,10 @@ export default {
           // If fetch fails, port is closed or inaccessible
           this.hasPixelcade = false;
         });
+    },
+    toLogs() {
+      this.$router.push({ path: "/files/virtual/logs" });
+      this.closeHovers();
     },
     toPixelcade() {
       const currentHost = window.location.hostname; // Get the current hostname

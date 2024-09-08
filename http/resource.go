@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -19,6 +21,121 @@ import (
 	"github.com/filebrowser/filebrowser/v2/files"
 	"github.com/filebrowser/filebrowser/v2/fileutils"
 )
+
+var logFilesVirtualPath = "/virtual/logs"
+
+var logFiles = []string{
+	"/rcade/share/.emulationstation/es_log.txt",
+	"/rcade/share/.emulationstation/es_log.txt.bak",
+	"/rcade/share/.emulationstation/upgrade.log",
+	"/tmp/last_game_launch.log",
+	"/tmp/rcade-usbmount.log",
+	"/var/log/messages",
+}
+
+// getLogFile returns a FileInfo for a log file
+func getLogFile(path string) (*files.FileInfo, error) {
+	logFileName := filepath.Base(path)
+	for _, logFile := range logFiles {
+		if filepath.Base(logFile) == logFileName {
+			logFileStat, err := os.Stat(logFile)
+			if err != nil {
+				if os.IsNotExist(err) {
+					return &files.FileInfo{}, nil
+				}
+
+				return &files.FileInfo{}, err
+			}
+			content, err := os.ReadFile(logFile)
+			if err != nil {
+				return &files.FileInfo{}, err
+			}
+			return &files.FileInfo{
+				Path:      filepath.Join("/virtual", path),
+				Name:      logFileName,
+				Size:      logFileStat.Size(),
+				Extension: filepath.Ext(logFileName),
+				ModTime:   logFileStat.ModTime(),
+				Mode:      fs.FileMode(0444),
+				IsDir:     false,
+				IsSymlink: false,
+				Type:      "text",
+				Content:   string(content),
+			}, nil
+		}
+	}
+	return &files.FileInfo{}, nil
+}
+
+// getLogFiles returns a Listing of log files
+func getLogFiles() (*files.FileInfo, error) {
+	var items []*files.FileInfo
+	for _, path := range logFiles {
+		logFileName := filepath.Base(path)
+		virtPath := filepath.Join(logFilesVirtualPath, logFileName)
+		logFileStat, err := os.Stat(path)
+		if err != nil {
+			if os.IsNotExist(err) {
+				continue
+			}
+
+			return &files.FileInfo{}, err
+		}
+		items = append(items, &files.FileInfo{
+			Path:      virtPath,
+			Name:      logFileName,
+			Type:      "text",
+			IsDir:     false,
+			IsSymlink: false,
+			Mode:      fs.FileMode(0444),
+			Size:      logFileStat.Size(),
+			ModTime:   logFileStat.ModTime(),
+			Extension: filepath.Ext(logFileName),
+		})
+	}
+	i := files.FileInfo{
+		Listing: &files.Listing{
+			Items:    items,
+			NumDirs:  0,
+			NumFiles: len(items),
+			Sorting:  files.Sorting{By: "name", Asc: true},
+		},
+		Path:      logFilesVirtualPath,
+		Name:      "logs",
+		IsDir:     true,
+		IsSymlink: false,
+		Extension: "",
+	}
+
+	return &i, nil
+}
+
+var resourceVirtualGetHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	if r.URL.Path == "/logs" || r.URL.Path == "/logs/" {
+		return logFilesHandler(w, r, d)
+	} else if strings.HasPrefix(r.URL.Path, "/logs/") {
+		return logFileHandler(w, r, d)
+	}
+
+	return http.StatusNotFound, nil
+})
+
+var logFileHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	file, err := getLogFile(r.URL.Path)
+	if err != nil {
+		return errToStatus(err), err
+	}
+	return renderJSON(w, r, file)
+})
+
+var logFilesHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	log.Printf("logFilesHandler: %s", r.URL.Path)
+	file, err := getLogFiles()
+	if err != nil {
+		return errToStatus(err), err
+	}
+	return renderJSON(w, r, file)
+})
 
 var resourceGetHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
 	file, err := files.NewFileInfo(&files.FileOptions{
@@ -338,6 +455,13 @@ type DiskUsageResponse struct {
 }
 
 var diskUsage = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	if strings.HasPrefix(r.URL.Path, "/virtual") {
+		return renderJSON(w, r, &DiskUsageResponse{
+			Total: 0,
+			Used:  0,
+		})
+	}
+
 	file, err := files.NewFileInfo(&files.FileOptions{
 		Fs:         d.user.Fs,
 		Path:       r.URL.Path,
