@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -173,7 +172,6 @@ var logFileHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *da
 })
 
 var logFilesHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-	log.Printf("logFilesHandler: %s", r.URL.Path)
 	file, err := getLogFiles()
 	if err != nil {
 		return errToStatus(err), err
