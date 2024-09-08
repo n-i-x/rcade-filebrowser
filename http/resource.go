@@ -13,6 +13,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/shirou/gopsutil/v3/disk"
 	"github.com/spf13/afero"
@@ -23,6 +24,7 @@ import (
 )
 
 var logFilesVirtualPath = "/virtual/logs"
+var dirSize = 3488
 
 var logFiles = []string{
 	"/rcade/share/.emulationstation/es_log.txt",
@@ -110,14 +112,56 @@ func getLogFiles() (*files.FileInfo, error) {
 	return &i, nil
 }
 
+func getVirtualRoot() (*files.FileInfo, error) {
+	var items []*files.FileInfo
+
+	currentTime := time.Now()
+	modTime := currentTime.Add(-5 * time.Second)
+
+	items = append(items, &files.FileInfo{
+		Path:    "/virtual/logs",
+		Name:    "logs",
+		IsDir:   true,
+		Mode:    fs.FileMode(0555) | fs.ModeDir,
+		Size:    int64(dirSize),
+		ModTime: modTime,
+	})
+	i := files.FileInfo{
+		Listing: &files.Listing{
+			Items:    items,
+			NumDirs:  len(items),
+			NumFiles: 0,
+			Sorting:  files.Sorting{By: "name", Asc: true},
+		},
+		Path:    "/virtual",
+		Name:    "virtual",
+		Size:    int64(dirSize),
+		Mode:    fs.FileMode(0555) | fs.ModeDir,
+		ModTime: modTime,
+		IsDir:   true,
+	}
+
+	return &i, nil
+}
+
 var resourceVirtualGetHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-	if r.URL.Path == "/logs" || r.URL.Path == "/logs/" {
+	if r.URL.Path == "/" {
+		return virtualRootHandler(w, r, d)
+	} else if r.URL.Path == "/logs" || r.URL.Path == "/logs/" {
 		return logFilesHandler(w, r, d)
 	} else if strings.HasPrefix(r.URL.Path, "/logs/") {
 		return logFileHandler(w, r, d)
 	}
 
 	return http.StatusNotFound, nil
+})
+
+var virtualRootHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	file, err := getVirtualRoot()
+	if err != nil {
+		return errToStatus(err), err
+	}
+	return renderJSON(w, r, file)
 })
 
 var logFileHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
