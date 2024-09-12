@@ -87,6 +87,8 @@ func NewHandler(
 
 	api.Handle("/support", monkey(supportFileHandler, "")).Methods("GET")
 
+	api.Handle("/sysinfo", monkey(supportSysinfoHandler, "")).Methods("GET")
+
 	api.PathPrefix("/raw").Handler(monkey(rawHandler, "/api/raw")).Methods("GET")
 	api.PathPrefix("/preview/{size}/{path:.*}").
 		Handler(monkey(previewHandler(imgSvc, fileCache, server.EnableThumbnails, server.ResizePreview), "/api/preview")).Methods("GET")

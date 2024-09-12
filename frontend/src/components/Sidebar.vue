@@ -65,6 +65,17 @@
           <span>{{ $t("sidebar.supportFile") }}</span>
         </button>
         <button
+          @click="showHover('systemInfo')"
+          class="action"
+          :aria-label="$t('sidebar.sysInfo')"
+          :title="$t('sidebar.sysInfo')"
+        >
+          <i class="material-icons">info</i>
+          <span>{{ $t("sidebar.sysInfo") }}</span>
+        </button>
+      </div>
+      <div>
+        <button
           class="action"
           @click="toSettings"
           :aria-label="$t('sidebar.settings')"

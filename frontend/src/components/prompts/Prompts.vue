@@ -26,6 +26,7 @@ import ShareDelete from "./ShareDelete.vue";
 import Upload from "./Upload.vue";
 import DiscardEditorChanges from "./DiscardEditorChanges.vue";
 import SupportFile from "./SupportFile.vue";
+import SystemInfo from "./SysInfo.vue";
 
 const layoutStore = useLayoutStore();
 
@@ -51,6 +52,7 @@ const components = new Map<string, any>([
   ["supportFile", SupportFile],
   ["deleteUser", DeleteUser],
   ["discardEditorChanges", DiscardEditorChanges],
+  ["systemInfo", SystemInfo],
 ]);
 
 watch(currentPromptName, (newValue) => {
