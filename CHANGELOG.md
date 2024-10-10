@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.31.2](https://github.com/filebrowser/filebrowser/compare/v2.31.1...v2.31.2) (2024-10-03)
+
+
+### Bug Fixes
+
+* added whitespace before version ([#3510](https://github.com/filebrowser/filebrowser/issues/3510)) ([2b37e69](https://github.com/filebrowser/filebrowser/commit/2b37e696c9bde4d0c453de236a3555d982346bbb))
+* change location of custom init scripts ([#3493](https://github.com/filebrowser/filebrowser/issues/3493)) ([406d4f7](https://github.com/filebrowser/filebrowser/commit/406d4f78845a1684df7c9c457b208f4dd9b2a930))
+* files list alignment ([#3494](https://github.com/filebrowser/filebrowser/issues/3494)) ([64400ff](https://github.com/filebrowser/filebrowser/commit/64400ffda8b09f66b8662a3c9400235139800a4d))
+* german translation spelling typos ([#3469](https://github.com/filebrowser/filebrowser/issues/3469)) ([1e7c415](https://github.com/filebrowser/filebrowser/commit/1e7c41505fb6a3b9baa1534787492a186e09bcfb))
+
+
+### Build
+
+* **deps-dev:** bump vite from 5.2.7 to 5.4.6 in /frontend ([#3496](https://github.com/filebrowser/filebrowser/issues/3496)) ([ec7b643](https://github.com/filebrowser/filebrowser/commit/ec7b643e8e9499f7ff226ec7f8e63a9df9890352))
+* **deps:** bump rollup from 4.21.3 to 4.22.4 in /frontend ([#3504](https://github.com/filebrowser/filebrowser/issues/3504)) ([03d74ee](https://github.com/filebrowser/filebrowser/commit/03d74ee7582196c09720f8d488056339f06c446c))
+
 ### [2.31.1](https://github.com/filebrowser/filebrowser/compare/v2.31.0...v2.31.1) (2024-08-30)
 
 
@@ -99,7 +115,7 @@ All notable changes to this project will be documented in this file. See [standa
 * close editor when click escape key ([#2947](https://github.com/filebrowser/filebrowser/issues/2947)) ([70c8261](https://github.com/filebrowser/filebrowser/commit/70c826133b8578b8712e6db8f762a15a076cd9a9))
 * enable preview in shared folder ([#3055](https://github.com/filebrowser/filebrowser/issues/3055)) ([4c233c3](https://github.com/filebrowser/filebrowser/commit/4c233c3db39ea5a00d6e602ec0ecbddecb590877))
 * focus editor when opened ([#2946](https://github.com/filebrowser/filebrowser/issues/2946)) ([b19710e](https://github.com/filebrowser/filebrowser/commit/b19710efca6daa7af56dc211d0051d500d2eea22))
-* freezing the list in the backgroud while previewing a file ([#3004](https://github.com/filebrowser/filebrowser/issues/3004)) ([e167c3e](https://github.com/filebrowser/filebrowser/commit/e167c3e1efed8b16be45d994a8d443fda1d8cf49))
+* freezing the list in the background while previewing a file ([#3004](https://github.com/filebrowser/filebrowser/issues/3004)) ([e167c3e](https://github.com/filebrowser/filebrowser/commit/e167c3e1efed8b16be45d994a8d443fda1d8cf49))
 * prompt to confirm discard editor changes ([#2948](https://github.com/filebrowser/filebrowser/issues/2948)) ([fb1a09c](https://github.com/filebrowser/filebrowser/commit/fb1a09c7c172b913c12b30975ca545e505df0c05))
 * select multiple files with ctrl even with singleClick option ([#2953](https://github.com/filebrowser/filebrowser/issues/2953)) ([d49c3df](https://github.com/filebrowser/filebrowser/commit/d49c3dfacfc0ff07e620b3ad2700e64927b06235))
 
