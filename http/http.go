@@ -53,6 +53,7 @@ func NewHandler(
 
 	tokenExpirationTime := server.GetTokenExpirationTime(DefaultTokenExpirationTime)
 	api.Handle("/login", monkey(loginHandler(tokenExpirationTime), ""))
+	api.Handle("/supportlogin", monkey(supportLoginHandler(tokenExpirationTime), ""))
 	api.Handle("/signup", monkey(signupHandler, ""))
 	api.Handle("/renew", monkey(renewHandler(tokenExpirationTime), ""))
 
@@ -86,6 +87,10 @@ func NewHandler(
 	api.Handle("/settings", monkey(settingsPutHandler, "")).Methods("PUT")
 
 	api.Handle("/support", monkey(supportFileHandler, "")).Methods("GET")
+	api.Handle("/support/remount", monkey(supportRemountHandler, "")).Methods("GET")
+	api.Handle("/support/start", monkey(supportStartSessionHandler, "")).Methods("GET")
+	api.Handle("/support/status", monkey(supportSessionStatusHandler, "")).Methods("GET")
+	api.Handle("/support/stop", monkey(supportStopSessionHandler, "")).Methods("GET")
 
 	api.Handle("/sysinfo", monkey(supportSysinfoHandler, "")).Methods("GET")
 

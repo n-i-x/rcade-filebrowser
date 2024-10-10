@@ -53,3 +53,10 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+button.button-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--textSecondary);
+}

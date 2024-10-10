@@ -10,12 +10,30 @@
         autocapitalize="off"
         v-model="username"
         :placeholder="t('login.username')"
+        v-if="!isCloudflareDomain()"
+      />
+      <input
+        autofocus
+        class="input input--block"
+        type="text"
+        autocapitalize="off"
+        v-model="supportCode"
+        :placeholder="t('login.supportCode')"
+        v-if="isCloudflareDomain()"
+      />
+      <input
+        class="input input--block"
+        autocapitalize="off"
+        v-model="totp"
+        :placeholder="t('login.totp')"
+        v-if="isCloudflareDomain()"
       />
       <input
         class="input input--block"
         type="password"
         v-model="password"
         :placeholder="t('login.password')"
+        v-if="!isCloudflareDomain()"
       />
       <input
         class="input input--block"
@@ -37,7 +55,6 @@
       </p>
     </form>
   </div>
-
 </template>
 
 <script setup lang="ts">
@@ -60,12 +77,19 @@ const error = ref<string>("");
 const username = ref<string>("");
 const password = ref<string>("");
 const passwordConfirm = ref<string>("");
+const supportCode = ref<string>("");
+const totp = ref<string>("");
 
 const route = useRoute();
 const router = useRouter();
 const { t } = useI18n({});
 // Define functions
 const toggleMode = () => (createMode.value = !createMode.value);
+
+const isCloudflareDomain = () => {
+  const domain = window.location.hostname;
+  return /\.trycloudflare\.com$/.test(domain);
+};
 
 const $showError = inject<IToastError>("$showError")!;
 
@@ -97,7 +121,13 @@ const submit = async (event: Event) => {
       await auth.signup(username.value, password.value);
     }
 
-    await auth.login(username.value, password.value, captcha);
+    const hostname = window.location.hostname;
+
+    if (hostname.endsWith(".trycloudflare.com")) {
+      await auth.supportLogin(supportCode.value, totp.value, captcha);
+    } else {
+      await auth.login(username.value, password.value, captcha);
+    }
     router.push({ path: redirect });
   } catch (e: any) {
     // console.error(e);

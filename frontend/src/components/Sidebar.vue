@@ -52,7 +52,7 @@
           :aria-label="$t('sidebar.logs')"
           :title="$t('sidebar.logs')"
         >
-          <i class="material-icons">receipt_long</i>
+          <i class="material-icons">topic</i>
           <span>{{ $t("sidebar.logs") }}</span>
         </button>
         <button
@@ -61,7 +61,7 @@
           :aria-label="$t('sidebar.supportFile')"
           :title="$t('sidebar.supportFile')"
         >
-          <i class="material-icons">support_agent</i>
+          <i class="material-icons">folder_zip</i>
           <span>{{ $t("sidebar.supportFile") }}</span>
         </button>
         <button
@@ -73,6 +73,26 @@
           <i class="material-icons">info</i>
           <span>{{ $t("sidebar.sysInfo") }}</span>
         </button>
+        <button
+          @click="showHover('supportSession')"
+          class="action"
+          :aria-label="$t('sidebar.supportSession')"
+          :title="$t('sidebar.supportSession')"
+          v-if="!isCloudflareDomain()"
+        >
+          <i class="material-icons">support_agent</i>
+          <span>{{ $t("sidebar.supportSession") }}</span>
+        </button>
+        <button
+          @click="remountVolumes"
+          class="action"
+          :aria-label="$t('sidebar.remount')"
+          :title="$t('sidebar.remount')"
+          v-if="user.perm.admin"
+        >
+          <i class="material-icons">repartition</i>
+          <span>{{ $t("sidebar.remount") }}</span>
+        </button>
       </div>
       <div>
         <button
@@ -80,6 +100,7 @@
           @click="toSettings"
           :aria-label="$t('sidebar.settings')"
           :title="$t('sidebar.settings')"
+          v-if="user.perm.admin"
         >
           <i class="material-icons">settings_applications</i>
           <span>{{ $t("sidebar.settings") }}</span>
@@ -179,7 +200,7 @@ export default {
       hasPixelcade: false, // Initialize the variable
     };
   },
-  inject: ["$showError"],
+  inject: ["$showError", "$showSuccess"],
   computed: {
     ...mapState(useAuthStore, ["user", "isLoggedIn"]),
     ...mapState(useFileStore, ["isFiles", "reload"]),
@@ -228,6 +249,24 @@ export default {
         .catch(() => {
           // If fetch fails, port is closed or inaccessible
           this.hasPixelcade = false;
+        });
+    },
+    isCloudflareDomain() {
+      const domain = window.location.hostname;
+      return /\.trycloudflare\.com$/.test(domain);
+    },
+    remountVolumes() {
+      fetch("/api/support/remount")
+        .then((response) => {
+          if (response.ok) {
+            this.$showSuccess("Remounted successfully");
+          } else {
+            throw new Error(response.statusText);
+          }
+        })
+        .catch((error) => {
+          this.$showError(error);
+          console.error("Error remounting:", error);
         });
     },
     toLogs() {

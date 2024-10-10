@@ -36,6 +36,8 @@
     "selectMultiple": "Select multiple",
     "share": "Share",
     "shell": "Toggle shell",
+    "start": "Start",
+    "stop": "Stop",
     "submit": "Submit",
     "switchView": "Switch view",
     "toggleSidebar": "Toggle sidebar",
@@ -98,6 +100,8 @@
     "passwordsDontMatch": "Passwords don't match",
     "signup": "Signup",
     "submit": "Login",
+    "supportCode": "Support Code",
+    "totp": "One-time password",
     "username": "Username",
     "usernameTaken": "Username already taken",
     "wrongCredentials": "Wrong credentials"
@@ -143,7 +147,9 @@
     "resolution": "Resolution",
     "discardEditorChanges": "Are you sure you wish to discard the changes you've made?",
     "supportFile": "Support File",
-    "supportFileMessage": "Generate a support file."
+    "supportFileMessage": "Generate a support file.",
+    "supportSession": "Support Session",
+    "supportSessionMessage": "Would you like to start a support session? This will allow RCade Support to access your files and help you with any issues you may have."
   },
   "search": {
     "images": "Images",
@@ -252,14 +258,17 @@
     "newFolder": "New folder",
     "pixelcade": "Pixelcade",
     "preview": "Preview",
+    "remount": "Remount /boot",
     "settings": "Settings",
     "signup": "Signup",
     "siteSettings": "Site Settings",
     "supportFile": "Support File",
+    "supportSession": "Support Session",
     "sysInfo": "System Information"
   },
   "success": {
-    "linkCopied": "Link copied!"
+    "linkCopied": "Link copied!",
+    "supportInfoCopied": "Support information copied!"
   },
   "time": {
     "days": "Days",

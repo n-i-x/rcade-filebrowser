@@ -55,6 +55,29 @@ export async function login(
   }
 }
 
+export async function supportLogin(supportCode: string, totp: string, recaptcha: string) {
+  const data = { supportCode, totp, recaptcha };
+
+  const res = await fetch(`${baseURL}/api/supportlogin`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const body = await res.text();
+
+  if (res.status === 200) {
+    parseToken(body);
+  } else {
+    throw new StatusError(
+      body || `${res.status} ${res.statusText}`,
+      res.status
+    );
+  }
+}
+
 export async function renew(jwt: string) {
   const res = await fetch(`${baseURL}/api/renew`, {
     method: "POST",
